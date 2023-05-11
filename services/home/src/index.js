@@ -52,6 +52,29 @@ app.get("/", async (req, res) => {
   }
 })
 
+app.get("/.well-known/trust-token/key-commitment", (req, res) => {
+  console.log(req.path)
+  const protocol_version = "PrivateStateTokenV3VOPRF"
+
+  const key_commitment = {}
+  key_commitment[protocol_version] = {
+    protocol_version,
+    id: 1,
+    batchsize: 1,
+    keys: {
+      1: { Y, expiry }
+    }
+  }
+
+  res.set({
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json; charset=utf-8"
+  })
+
+  const json = JSON.stringify(key_commitment, "", " ")
+  res.send(json)
+})
+
 app.get(`/.well-known/private-state-token/issuance`, async (req, res) => {
   console.log(req.path)
   console.log(req.headers)
