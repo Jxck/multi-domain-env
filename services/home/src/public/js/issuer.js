@@ -10,17 +10,19 @@ function base64decode(str) {
 document.on("DOMContentLoaded", async (e) => {
   const ISSUER = location.origin
 
-  $("#yes").on("click", async () => {
+  $("#yes").on("submit", async (e) => {
+    e.preventDefault()
     $("#issuing").style.visibility = "visible"
 
     // token issue request
-    const res = await fetch("/.well-known/private-state-token/issuance", {
+    const option = {
       privateToken: {
         version: 1,
         operation: "token-request",
-        issuers: [ISSUER]
-      }
-    })
+        issuer: ISSUER,
+      },
+    }
+    const res = await fetch("/private-state-token/issuance", option)
     const text = await res.text()
     console.log({ text })
 
