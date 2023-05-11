@@ -14,7 +14,7 @@ document.on("DOMContentLoaded", async (e) => {
     $("#issuing").style.visibility = "visible"
 
     // token issue request
-    await fetch("/.well-known/trust-token/issuance", {
+    const res = await fetch("/.well-known/private-state-token/issuance", {
       method: "POST",
       privateToken: {
         version: 1,
@@ -22,10 +22,12 @@ document.on("DOMContentLoaded", async (e) => {
         issuer: ISSUER
       }
     })
+    const text = await res.text()
+    console.log({ text })
 
     // check token exists
     const token = await document.hasPrivateToken(ISSUER)
-    console.log(token)
+    console.log({ token })
 
     if (token) {
       $("#issued").style.visibility = "visible"
@@ -48,7 +50,7 @@ document.on("DOMContentLoaded", async (e) => {
   //   try {
   //     while (await document.hasTrustToken(ISSUER)) {
   //       // redemption request
-  //       await fetch(`${ISSUER}/.well-known/trust-token/redemption`, {
+  //       await fetch(`${ISSUER}/.well-known/private-state-token/redemption`, {
   //         method: "POST",
   //         trustToken: {
   //           type: "token-redemption",
@@ -57,8 +59,8 @@ document.on("DOMContentLoaded", async (e) => {
   //         }
   //       });
 
-  //       // send SRR and echo Sec-Eedemption-Record
-  //       const res = await fetch(`${ISSUER}/.well-known/trust-token/send-rr`, {
+  //       // send SRR and echo Sec-Redemption-Record
+  //       const res = await fetch(`${ISSUER}/.well-known/private-state-token/send-rr`, {
   //         method: "POST",
   //         headers: new Headers({
   //           "Signed-Headers": "sec-redemption-record, sec-time"

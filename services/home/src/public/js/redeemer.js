@@ -23,7 +23,7 @@ async function progress(message) {
 document.on("DOMContentLoaded", async (e) => {
   console.log(e)
 
-  const ISSUER = "https://trust-token-issuer-demo.glitch.me"
+  const ISSUER = "https://private-state-token-issuer.glitch.me/"
 
   async function verify_human(e) {
     e.preventDefault()
@@ -32,8 +32,8 @@ document.on("DOMContentLoaded", async (e) => {
     await progress("#checking")
 
     // check token exists
-    const token = await document.hasTrustToken(ISSUER)
-    console.log(token)
+    const token = await document.hasPrivateToken(ISSUER)
+    console.log({ token })
 
     await progress("#hasTrustToken")
 
@@ -47,36 +47,38 @@ document.on("DOMContentLoaded", async (e) => {
         await progress("#redemption")
 
         // redemption request
-        await fetch(`${ISSUER}/.well-known/trust-token/redemption`, {
+        await fetch(`${ISSUER}/.well-known/private-state-token/redemption`, {
           method: "POST",
-          trustToken: {
-            type: "token-redemption",
+          privateToken: {
+            version: 1,
+            operation: "token-redemption",
             issuer: ISSUER,
             refreshPolicy: "none"
           }
         })
+        const text = await res.text()
+        console.log({ text })
       } catch (err) {
         await progress("#cached")
-
         console.info(err)
       }
 
       await progress("#verify")
 
       // send RR and echo Sec-Redemption-Record
-      const res = await fetch(`/.well-known/trust-token/send-rr`, {
+      const res = await fetch(`/.well-known/private-state-token/send-rr`, {
         method: "POST",
         headers: new Headers({
-          "Signed-Headers": "sec-redemption-record, sec-time"
+          // "Signed-Headers": "sec-redemption-record, sec-time"
         }),
-
-        trustToken: {
-          type: "send-redemption-record",
-          issuers: [ISSUER],
-          refreshPolicy: "none",
-          includeTimestampHeader: true,
-          signRequestData: "include",
-          additionalSigningData: "additional_signing_data"
+        privateToken: {
+          version: 1,
+          operation: "send-redemption-record",
+          issuers: [ISSUER]
+          // refreshPolicy: "none",
+          // includeTimestampHeader: true,
+          // signRequestData: "include",
+          // additionalSigningData: "additional_signing_data"
         }
       })
 
