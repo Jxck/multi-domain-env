@@ -8,6 +8,8 @@ const { EXTERNAL_PORT, PORT } = process.env
 
 const exec = promisify(childProcess.exec);
 
+// console.log(await exec("./bin/example"))
+
 const Y = readFileSync(`${resolve("./")}/keys/pub_key.txt`)
   .toString()
   .trim()

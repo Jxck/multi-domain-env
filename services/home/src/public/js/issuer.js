@@ -11,7 +11,6 @@ document.on("DOMContentLoaded", async (e) => {
   const ISSUER = location.origin
 
   $("#yes").on("click", async (e) => {
-    e.preventDefault()
     $("#issuing").style.visibility = "visible"
 
     // token issue request
@@ -39,17 +38,13 @@ document.on("DOMContentLoaded", async (e) => {
     $("#back").style.visibility = "visible"
 
     setTimeout(() => {
-      const query = new URLSearchParams(location.search)
-      const back = query.get("back")
-      if (back) {
-        location.href = back // open redirector !!?
-      }
+      location.href = "https://private-state-token-redeemer.glitch.me/"
     }, 1000)
   })
 
   $("#refresh").on("click", async () => {
     try {
-      while (await document.hasTrustToken(ISSUER)) {
+      while (await document.hasPrivateToken(ISSUER)) {
         // redemption request
         await fetch(`${ISSUER}/.well-known/private-state-token/redemption`, {
           method: "POST",
