@@ -10,14 +10,13 @@ function base64decode(str) {
 document.on("DOMContentLoaded", async (e) => {
   const ISSUER = location.origin
 
-  $("#yes").on("submit", async (e) => {
+  $("#yes").on("click", async (e) => {
     e.preventDefault()
     $("#issuing").style.visibility = "visible"
 
     // token issue request
     const option = {
       privateToken: {
-        type: "private-state-token",
         version: 1,
         operation: "token-request",
         issuer: ISSUER
