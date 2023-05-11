@@ -10,10 +10,10 @@ MAIN = bin/main
 all: main
 
 main: $(OBJS) c/config.h
-	$(CC) c/main.c -o $(MAIN) $(OBJS) $(CFLAGS)
+	$(CC) c/main.c -static -o $(MAIN) $(OBJS) $(CFLAGS)
 
 example: c/example.c c/config.h
-	$(CC) c/example.c -o ./bin/example c/util.o $(CFLAGS)
+	$(CC) c/example.c -static -o ./bin/example c/util.o $(CFLAGS)
 	./bin/example
 
 .PHONY: generate_key, clean, test
