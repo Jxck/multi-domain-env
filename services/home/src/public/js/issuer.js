@@ -19,8 +19,8 @@ document.on("DOMContentLoaded", async (e) => {
       privateToken: {
         version: 1,
         operation: "token-request",
-        issuer: ISSUER,
-      },
+        issuer: ISSUER
+      }
     }
     const res = await fetch("/private-state-token/issuance", option)
     const text = await res.text()

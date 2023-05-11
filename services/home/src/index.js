@@ -1,10 +1,12 @@
 // DSP
 import express from "express"
-import { readFileSync } from "fs";
-import { resolve } from "path";
+import { readFileSync } from "fs"
+import { resolve } from "path"
 const { EXTERNAL_PORT, PORT } = process.env
 
-const Y = readFileSync(`${resolve('./')}/keys/pub_key.txt`).toString().trim();
+const Y = readFileSync(`${resolve("./")}/keys/pub_key.txt`)
+  .toString()
+  .trim()
 
 const app = express()
 
@@ -58,7 +60,7 @@ app.get("/", async (req, res) => {
 app.get("/.well-known/trust-token/key-commitment", async (req, res) => {
   console.log(req.path)
   const protocol_version = "PrivateStateTokenV1VOPRF"
-  const expiry = Date.now()+(1000*60*60*24*365) // 1 year later
+  const expiry = (Date.now() + 1000 * 60 * 60 * 24 * 365) * 1000 // 1 year later
 
   const key_commitment = {}
   key_commitment[protocol_version] = {
