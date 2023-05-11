@@ -35,13 +35,13 @@ app.get("/", async (req, res) => {
         EXTERNAL_PORT
       })
     case "private-state-token-issuer.glitch.me":
-      return res.render("index", {
+      return res.render("issuer", {
         title: "issuer",
         detail: "detail",
         EXTERNAL_PORT
       })
     case "private-state-token-redeemer.glitch.me":
-      return res.render("index", {
+      return res.render("redeemer", {
         title: "redeemer",
         detail: "detail",
         EXTERNAL_PORT
