@@ -46,7 +46,26 @@ app.get("/", async (req, res) => {
         detail: "detail",
         EXTERNAL_PORT
       })
+    default:
+      console.error(`invalid domain ${host}`)
+      return
   }
+})
+
+app.post(`/.well-known/trust-token/issuance`, async (req, res) => {
+  console.log(req.path)
+  console.log(req.headers)
+  const sec_trust_token = req.headers["sec-trust-token"]
+  console.log({ sec_trust_token })
+  if (sec_trust_token.match(BASE64FORMAT) === null) {
+    return res.status(400).send("invalid trust token")
+  }
+  const result = await exec(`./bin/main --issue ${sec_trust_token}`)
+  const token = result.stdout
+  console.log({ token })
+  res.set({ "Access-Control-Allow-Origin": "*" })
+  res.append("sec-trust-token", token)
+  res.send()
 })
 
 app.listen(PORT, () => {
