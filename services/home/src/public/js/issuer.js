@@ -1,5 +1,3 @@
-/* Copyright 2020 Google LLC. SPDX-License-Identifier: Apache-2.0 */
-
 "use strict"
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
@@ -25,25 +23,25 @@ document.on("DOMContentLoaded", async (e) => {
       }
     })
 
-    // // check token exists
-    // const token = await document.hasPrivateToken(ISSUER);
-    // console.log(token);
+    // check token exists
+    const token = await document.hasPrivateToken(ISSUER)
+    console.log(token)
 
-    // if (token) {
-    //   $("#issued").style.visibility = "visible";
-    // } else {
-    //   // TODO: failure case
-    // }
+    if (token) {
+      $("#issued").style.visibility = "visible"
+    } else {
+      // TODO: failure case
+    }
 
-    // $("#back").style.visibility = "visible";
+    $("#back").style.visibility = "visible"
 
-    // setTimeout(() => {
-    //   const query = new URLSearchParams(location.search);
-    //   const back = query.get("back");
-    //   if (back) {
-    //     location.href = back; // open redirector !!?
-    //   }
-    // }, 1000);
+    setTimeout(() => {
+      const query = new URLSearchParams(location.search)
+      const back = query.get("back")
+      if (back) {
+        location.href = back // open redirector !!?
+      }
+    }, 1000)
   })
 
   // $("#refresh").on("click", async () => {
