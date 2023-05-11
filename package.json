@@ -7,6 +7,7 @@
     "cert": "cd nginx/cert && ./mkcert.sh",
     "build": "docker-compose build",
     "docker": "docker-compose build && docker-compose up",
+    "rm": "docker-compose rm -a && docker volume prune && docker image prune && docker rmi $(docker images -q)",
     "fmt": "prettier --write ."
   },
   "devDependencies": {
