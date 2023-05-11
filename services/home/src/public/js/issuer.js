@@ -46,30 +46,34 @@ document.on("DOMContentLoaded", async (e) => {
     try {
       while (await document.hasPrivateToken(ISSUER)) {
         // redemption request
-        await fetch(`${ISSUER}/.well-known/private-state-token/redemption`, {
-          method: "POST",
-          trustToken: {
-            type: "token-redemption",
+        await fetch(`${ISSUER}/private-state-token/redemption`, {
+          privateToken: {
+            version: 1,
+            operation: "token-redemption",
             issuer: ISSUER,
             refreshPolicy: "refresh"
           }
         })
 
         // send SRR and echo Sec-Redemption-Record
-        const res = await fetch(`${ISSUER}/.well-known/private-state-token/send-rr`, {
-          method: "POST",
-          headers: new Headers({
-            "Signed-Headers": "sec-redemption-record, sec-time"
-          }),
-
-          trustToken: {
-            type: "send-redemption-record",
+        const res = await fetch(`${ISSUER}/private-state-token/send-rr`, {
+          privateToken: {
+            version: 1,
+            operation: "send-redemption-record",
             issuers: [ISSUER],
-            refreshPolicy: "refresh",
-            includeTimestampHeader: true,
-            signRequestData: "include",
-            additionalSigningData: "additional_signing_data"
-          }
+          },
+          // headers: new Headers({
+          //   "Signed-Headers": "sec-redemption-record, sec-time"
+          // }),
+
+          // trustToken: {
+          //   type: "send-redemption-record",
+          //   issuers: [ISSUER],
+          //   refreshPolicy: "refresh",
+          //   includeTimestampHeader: true,
+          //   signRequestData: "include",
+          //   additionalSigningData: "additional_signing_data"
+          // }
         })
 
         const body = await res.json()

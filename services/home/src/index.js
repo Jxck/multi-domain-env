@@ -1,14 +1,17 @@
 // DSP
 import express from "express"
 import { readFileSync } from "fs"
-import { promisify } from "util";
+import { promisify } from "util"
 import { resolve } from "path"
-import * as childProcess from "child_process";
+import * as childProcess from "child_process"
+import * as sfv from "structured-field-values";
 const { EXTERNAL_PORT, PORT } = process.env
 
-const exec = promisify(childProcess.exec);
+const exec = promisify(childProcess.exec)
 
 // console.log(await exec("./bin/example"))
+
+const protocol_version = "PrivateStateTokenV1VOPRF"
 
 const Y = readFileSync(`${resolve("./")}/keys/pub_key.txt`)
   .toString()
@@ -37,7 +40,6 @@ app.set("views", "src/views")
 
 app.get("/.well-known/trust-token/key-commitment", async (req, res) => {
   console.log(req.path)
-  const protocol_version = "PrivateStateTokenV1VOPRF"
 
   // 1 year later
   const expiry = ((Date.now() + 1000 * 60 * 60 * 24 * 365) * 1000).toString()
@@ -65,10 +67,10 @@ app.get("/.well-known/trust-token/key-commitment", async (req, res) => {
 app.get(`/private-state-token/issuance`, async (req, res) => {
   console.log(req.path)
   console.log(req.headers)
-  const sec_trust_token = req.headers["sec-private-state-token"]
-  console.log({ sec_trust_token })
+  const sec_private_state_token = req.headers["sec-private-state-token"]
+  console.log({ sec_private_state_token })
 
-  const result = await exec(`${resolve("./")}/bin/main --issue ${sec_trust_token}`)
+  const result = await exec(`${resolve("./")}/bin/main --issue ${sec_private_state_token}`)
   const token = result.stdout
   console.log({ token })
   res.set({ "Access-Control-Allow-Origin": "*" })
@@ -76,25 +78,28 @@ app.get(`/private-state-token/issuance`, async (req, res) => {
   res.send()
 })
 
-app.get(`/.well-known/private-state-token/redemption`, async (req, res) => {
+app.get(`/private-state-token/redemption`, async (req, res) => {
   console.log(req.path)
   console.log(req.headers)
-  const sec_trust_token_version = req.headers["sec-private-state-token-version"]
-  if (sec_trust_token_version !== protocol_version) {
-    return res.send(400).send("unsupported trust token version")
+  const sec_private_state_token_crypto_version = req.headers["sec-private-state-token-crypto-version"]
+  console.log({ sec_private_state_token_crypto_version })
+  if (sec_private_state_token_crypto_version !== protocol_version) {
+    return res.sendStatus(400)
   }
-  const sec_trust_token = req.headers["sec-private-state-token"]
-  if (sec_trust_token.match(BASE64FORMAT) === null) {
-    return res.status(400).send("invalid trust token")
-  }
-  const result = await exec(`./bin/main --redeem ${sec_trust_token}`)
+
+  const sec_private_state_token = req.headers["sec-private-state-token"]
+  console.log({ sec_private_state_token })
+
+  const result = await exec(`${resolve("./")}/bin/main --redeem ${sec_private_state_token}`)
+  console.log({ result })
   const token = result.stdout
+  console.log({ token })
   res.set({ "Access-Control-Allow-Origin": "*" })
   res.append("sec-private-state-token", token)
   res.send()
 })
 
-app.get(`/.well-known/private-state-token/send-rr`, async (req, res) => {
+app.get(`/private-state-token/send-rr`, async (req, res) => {
   console.log(req.path)
 
   const headers = req.headers

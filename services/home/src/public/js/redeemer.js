@@ -47,8 +47,7 @@ document.on("DOMContentLoaded", async (e) => {
         await progress("#redemption")
 
         // redemption request
-        await fetch(`${ISSUER}/.well-known/private-state-token/redemption`, {
-          method: "POST",
+        const res = await fetch(`${ISSUER}/private-state-token/redemption`, {
           privateToken: {
             version: 1,
             operation: "token-redemption",
@@ -56,12 +55,14 @@ document.on("DOMContentLoaded", async (e) => {
             refreshPolicy: "none"
           }
         })
-        const text = await res.text()
-        console.log({ text })
+        console.log({res})
+
       } catch (err) {
         await progress("#cached")
         console.info(err)
       }
+
+      return
 
       await progress("#verify")
 
