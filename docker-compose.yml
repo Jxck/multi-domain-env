@@ -1,0 +1,67 @@
+version: "3.8"
+
+volumes:
+  first_node_modules:
+  second_node_modules:
+  third_node_modules:
+
+services:
+  first:
+    build: ./services/first
+    container_name: "first"
+    env_file:
+      - .env
+    volumes:
+      - ./services/first:/workspace
+      - first_node_modules:/workspace/node_modules
+    networks:
+      - internal
+
+  second:
+    build: ./services/second
+    container_name: "second"
+    env_file:
+      - .env
+    volumes:
+      - ./services/second:/workspace
+      - second_node_modules:/workspace/node_modules
+    networks:
+      - internal
+
+  third:
+    build: ./services/third
+    container_name: "third"
+    env_file:
+      - .env
+    volumes:
+      - ./services/third:/workspace
+      - third_node_modules:/workspace/node_modules
+    networks:
+      - internal
+
+  nginx:
+    image: nginx:1.22.1-alpine
+    container_name: "proxy"
+    volumes:
+      # using env variables in nginx config
+      - type: bind
+        source: "./nginx/nginx.conf"
+        target: "/etc/nginx/templates/default.conf.template"
+      - type: bind
+        source: "./nginx/cert"
+        target: "/cert"
+    networks:
+      - internal
+    ports:
+      - "${EXTERNAL_PORT}:443"
+    env_file:
+      - .env
+    depends_on:
+      - first
+      - second
+      - third
+
+networks:
+  internal:
+    name: internal-network
+    driver: bridge

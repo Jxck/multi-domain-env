@@ -1,0 +1,15 @@
+{
+  "name": "multi-domain-env",
+  "version": "0.0.0",
+  "description": "Multi Domain Environment with Real Domain & Cert",
+  "scripts": {
+    "start": "npm run docker",
+    "cert": "cd nginx/cert && ./mkcert.sh",
+    "build": "docker-compose build",
+    "docker": "docker-compose build && docker-compose up",
+    "fmt": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^2.8.4"
+  }
+}
