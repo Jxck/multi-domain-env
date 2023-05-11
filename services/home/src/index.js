@@ -29,38 +29,12 @@ app.use(
 app.set("view engine", "ejs")
 app.set("views", "src/views")
 
-app.get("/", async (req, res) => {
-  const host = req.headers.host
-  console.log({ host })
-  switch (host) {
-    case "private-state-token-demo.glitch.me":
-      return res.render("index", {
-        title: "home",
-        detail: "detail",
-        EXTERNAL_PORT
-      })
-    case "private-state-token-issuer.glitch.me":
-      return res.render("issuer", {
-        title: "issuer",
-        detail: "detail",
-        EXTERNAL_PORT
-      })
-    case "private-state-token-redeemer.glitch.me":
-      return res.render("redeemer", {
-        title: "redeemer",
-        detail: "detail",
-        EXTERNAL_PORT
-      })
-    default:
-      console.error(`invalid domain ${host}`)
-      return
-  }
-})
-
 app.get("/.well-known/trust-token/key-commitment", async (req, res) => {
   console.log(req.path)
   const protocol_version = "PrivateStateTokenV1VOPRF"
-  const expiry = (Date.now() + 1000 * 60 * 60 * 24 * 365) * 1000 // 1 year later
+
+  // 1 year later
+  const expiry = ((Date.now() + 1000 * 60 * 60 * 24 * 365) * 1000).toString()
 
   const key_commitment = {}
   key_commitment[protocol_version] = {
@@ -190,6 +164,34 @@ app.get(`/.well-known/private-state-token/send-rr`, async (req, res) => {
 
   res.set({ "Access-Control-Allow-Origin": "*" })
   res.send({ sig_verify })
+})
+
+app.get("/", async (req, res) => {
+  const host = req.headers.host
+  console.log({ host })
+  switch (host) {
+    case "private-state-token-demo.glitch.me":
+      return res.render("index", {
+        title: "home",
+        detail: "detail",
+        EXTERNAL_PORT
+      })
+    case "private-state-token-issuer.glitch.me":
+      return res.render("issuer", {
+        title: "issuer",
+        detail: "detail",
+        EXTERNAL_PORT
+      })
+    case "private-state-token-redeemer.glitch.me":
+      return res.render("redeemer", {
+        title: "redeemer",
+        detail: "detail",
+        EXTERNAL_PORT
+      })
+    default:
+      console.error(`invalid domain ${host}`)
+      return
+  }
 })
 
 app.listen(PORT, () => {

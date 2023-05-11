@@ -17,6 +17,7 @@ document.on("DOMContentLoaded", async (e) => {
     // token issue request
     const option = {
       privateToken: {
+        type: "private-state-token",
         version: 1,
         operation: "token-request",
         issuer: ISSUER

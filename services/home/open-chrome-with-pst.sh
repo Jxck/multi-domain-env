@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
 
 ## for glitch
-open -a Google\ Chrome\ Canary \
+open -a Google\ Chrome\ Dev \
   --args \
   --enable-blink-features=PrivateStateTokens,PrivateStateTokensAlwaysAllowIssuance,PrivacySandboxSettings3 \
-  --additional-private-state-token-key-commitments='{ "https://private-state-token-issuer.glitch.me": { "PrivateStateTokenV1VOPRF": { "protocol_version": "PrivateStateTokenV1VOPRF", "id": 1, "batchsize": 1, "keys": { "1": { "Y": "AAAAAQQ7W5gOubJT3kTpzNGsekT9RZPXgXGrOMB2+QPw/ZzAuLrM3kc8eyHuTc1KmKjH4sh5+ev5GCI4HVVd46o6rWvNvk0iZQtVuUPhT8X54Ajebng8v5zUnpnPuTjGqlc7+MM=", "expiry": 1715355460985000 } } } } }'
+  --additional-private-state-token-key-commitments='{ "https://private-state-token-issuer.glitch.me": { "PrivateStateTokenV1VOPRF": { "protocol_version": "PrivateStateTokenV1VOPRF", "id": 1, "batchsize": 1, "keys": { "1": { "Y": "AAAAAQQ7W5gOubJT3kTpzNGsekT9RZPXgXGrOMB2+QPw/ZzAuLrM3kc8eyHuTc1KmKjH4sh5+ev5GCI4HVVd46o6rWvNvk0iZQtVuUPhT8X54Ajebng8v5zUnpnPuTjGqlc7+MM=", "expiry": "1715356984440000" } } } } }'
 
 # {
 #  "PrivateStateTokenV1VOPRF": {
@@ -14,7 +14,7 @@ open -a Google\ Chrome\ Canary \
 #   "keys": {
 #    "1": {
 #     "Y": "AAAAAQQ7W5gOubJT3kTpzNGsekT9RZPXgXGrOMB2+QPw/ZzAuLrM3kc8eyHuTc1KmKjH4sh5+ev5GCI4HVVd46o6rWvNvk0iZQtVuUPhT8X54Ajebng8v5zUnpnPuTjGqlc7+MM=",
-#     "expiry": 1715355460985000
+#     "expiry": "1715356984440000"
 #    }
 #   }
 #  }
