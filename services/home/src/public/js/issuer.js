@@ -46,42 +46,42 @@ document.on("DOMContentLoaded", async (e) => {
     }, 1000)
   })
 
-  // $("#refresh").on("click", async () => {
-  //   try {
-  //     while (await document.hasTrustToken(ISSUER)) {
-  //       // redemption request
-  //       await fetch(`${ISSUER}/.well-known/private-state-token/redemption`, {
-  //         method: "POST",
-  //         trustToken: {
-  //           type: "token-redemption",
-  //           issuer: ISSUER,
-  //           refreshPolicy: "refresh"
-  //         }
-  //       });
+  $("#refresh").on("click", async () => {
+    try {
+      while (await document.hasTrustToken(ISSUER)) {
+        // redemption request
+        await fetch(`${ISSUER}/.well-known/private-state-token/redemption`, {
+          method: "POST",
+          trustToken: {
+            type: "token-redemption",
+            issuer: ISSUER,
+            refreshPolicy: "refresh"
+          }
+        })
 
-  //       // send SRR and echo Sec-Redemption-Record
-  //       const res = await fetch(`${ISSUER}/.well-known/private-state-token/send-rr`, {
-  //         method: "POST",
-  //         headers: new Headers({
-  //           "Signed-Headers": "sec-redemption-record, sec-time"
-  //         }),
+        // send SRR and echo Sec-Redemption-Record
+        const res = await fetch(`${ISSUER}/.well-known/private-state-token/send-rr`, {
+          method: "POST",
+          headers: new Headers({
+            "Signed-Headers": "sec-redemption-record, sec-time"
+          }),
 
-  //         trustToken: {
-  //           type: "send-redemption-record",
-  //           issuers: [ISSUER],
-  //           refreshPolicy: "refresh",
-  //           includeTimestampHeader: true,
-  //           signRequestData: "include",
-  //           additionalSigningData: "additional_signing_data"
-  //         }
-  //       });
+          trustToken: {
+            type: "send-redemption-record",
+            issuers: [ISSUER],
+            refreshPolicy: "refresh",
+            includeTimestampHeader: true,
+            signRequestData: "include",
+            additionalSigningData: "additional_signing_data"
+          }
+        })
 
-  //       const body = await res.json();
-  //       console.log(JSON.stringify(body, " ", " "));
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  //   console.log("token cleared");
-  // });
+        const body = await res.json()
+        console.log(JSON.stringify(body, " ", " "))
+      }
+    } catch (err) {
+      console.error(err)
+    }
+    console.log("token cleared")
+  })
 })

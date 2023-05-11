@@ -52,10 +52,10 @@ app.get("/", async (req, res) => {
   }
 })
 
-app.post(`/.well-known/trust-token/issuance`, async (req, res) => {
+app.post(`/.well-known/private-state-token/issuance`, async (req, res) => {
   console.log(req.path)
   console.log(req.headers)
-  const sec_trust_token = req.headers["sec-trust-token"]
+  const sec_trust_token = req.headers["sec-private-state-token"]
   console.log({ sec_trust_token })
   if (sec_trust_token.match(BASE64FORMAT) === null) {
     return res.status(400).send("invalid trust token")
@@ -64,8 +64,102 @@ app.post(`/.well-known/trust-token/issuance`, async (req, res) => {
   const token = result.stdout
   console.log({ token })
   res.set({ "Access-Control-Allow-Origin": "*" })
-  res.append("sec-trust-token", token)
+  res.append("sec-private-state-token", token)
   res.send()
+})
+
+app.post(`/.well-known/private-state-token/redemption`, async (req, res) => {
+  console.log(req.path)
+  console.log(req.headers)
+  const sec_trust_token_version = req.headers["sec-private-state-token-version"]
+  if (sec_trust_token_version !== protocol_version) {
+    return res.send(400).send("unsupported trust token version")
+  }
+  const sec_trust_token = req.headers["sec-private-state-token"]
+  if (sec_trust_token.match(BASE64FORMAT) === null) {
+    return res.status(400).send("invalid trust token")
+  }
+  const result = await exec(`./bin/main --redeem ${sec_trust_token}`)
+  const token = result.stdout
+  res.set({ "Access-Control-Allow-Origin": "*" })
+  res.append("sec-private-state-token", token)
+  res.send()
+})
+
+app.post(`/.well-known/private-state-token/send-rr`, async (req, res) => {
+  console.log(req.path)
+
+  const headers = req.headers
+  console.log({ headers })
+
+  // sec-redemption-record
+  // [(<issuer 1>, {"redemption-record": <SRR 1>}),
+  //  (<issuer N>, {"redemption-record": <SRR N>})],
+  const rr = sfv.decodeList(headers["sec-redemption-record"])
+  console.log({ rr })
+
+  const { value, params } = rr[0]
+  const redemption_record = Buffer.from(params["redemption-record"]).toString()
+  console.log({ redemption_record })
+
+  // verify client_public_key
+  const sec_signature = sfv.decodeDict(headers["sec-signature"])
+  const signatures = sec_signature.signatures.value[0]
+  const client_public_key = signatures.params["public-key"]
+  const sig = signatures.params["sig"]
+
+  console.log({ sec_signature })
+  console.log({ signatures })
+  console.log({ client_public_key })
+  console.log({ sig })
+
+  // verify sec-signature
+  const canonical_request_data = new Map([
+    ["destination", REDEEMER],
+    ["sec-redemption-record", headers["sec-redemption-record"]],
+    ["sec-time", headers["sec-time"]],
+    ["sec-private-state-tokens-additional-signing-data", headers["sec-private-state-tokens-additional-signing-data"]],
+    ["public-key", client_public_key]
+  ])
+
+  console.log(canonical_request_data)
+
+  const cbor_data = map(canonical_request_data)
+  const prefix = Buffer.from(headers["sec-private-state-token-version"])
+  console.log({ prefix })
+  const signing_data = new Uint8Array([...prefix, ...cbor_data])
+
+  console.log({
+    sig,
+    signing_data,
+    client_public_key,
+    sig_len: sig.length,
+    signing_data_len: signing_data.length,
+    client_public_key_len: client_public_key.length
+  })
+
+  const key = await webcrypto.subtle.importKey(
+    "raw",
+    client_public_key,
+    {
+      name: "ECDSA",
+      namedCurve: "P-256"
+    },
+    true,
+    ["verify"]
+  )
+
+  console.log(key)
+
+  // verify by Node Crypto
+  const key_object = KeyObject.from(key)
+  console.log(key_object)
+
+  const sig_verify = await promisify(verify)("SHA256", signing_data, key_object, sig)
+  console.log({ sig_verify })
+
+  res.set({ "Access-Control-Allow-Origin": "*" })
+  res.send({ sig_verify })
 })
 
 app.listen(PORT, () => {
