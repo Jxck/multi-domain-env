@@ -15,11 +15,10 @@ document.on("DOMContentLoaded", async (e) => {
 
     // token issue request
     const res = await fetch("/.well-known/private-state-token/issuance", {
-      method: "POST",
       privateToken: {
         version: 1,
         operation: "token-request",
-        issuer: ISSUER
+        issuers: [ISSUER]
       }
     })
     const text = await res.text()

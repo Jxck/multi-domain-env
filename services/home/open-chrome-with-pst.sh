@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-open -a Google\ Chrome\ Canary \
+open -a Google\ Chrome\ Dev \
   --args \
   --enable-blink-features=PrivateStateTokens,PrivateStateTokensAlwaysAllowIssuance \
   --enable-features=PrivacySandboxSettings3 \

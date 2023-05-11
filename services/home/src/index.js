@@ -52,7 +52,7 @@ app.get("/", async (req, res) => {
   }
 })
 
-app.post(`/.well-known/private-state-token/issuance`, async (req, res) => {
+app.get(`/.well-known/private-state-token/issuance`, async (req, res) => {
   console.log(req.path)
   console.log(req.headers)
   const sec_trust_token = req.headers["sec-private-state-token"]
@@ -68,7 +68,7 @@ app.post(`/.well-known/private-state-token/issuance`, async (req, res) => {
   res.send()
 })
 
-app.post(`/.well-known/private-state-token/redemption`, async (req, res) => {
+app.get(`/.well-known/private-state-token/redemption`, async (req, res) => {
   console.log(req.path)
   console.log(req.headers)
   const sec_trust_token_version = req.headers["sec-private-state-token-version"]
@@ -86,7 +86,7 @@ app.post(`/.well-known/private-state-token/redemption`, async (req, res) => {
   res.send()
 })
 
-app.post(`/.well-known/private-state-token/send-rr`, async (req, res) => {
+app.get(`/.well-known/private-state-token/send-rr`, async (req, res) => {
   console.log(req.path)
 
   const headers = req.headers
