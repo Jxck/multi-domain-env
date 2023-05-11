@@ -11,7 +11,7 @@
  * error: 0
  */
 int redeem(uint8_t *request_base64, size_t request_base64_len, uint8_t **response_base64, size_t *response_base64_len) {
-  const TRUST_TOKEN_METHOD *method = TRUST_TOKEN_experiment_v2_voprf();
+  const TRUST_TOKEN_METHOD *method = TRUST_TOKEN_pst_v1_voprf();
 
   // 1. Sec-Trust-Token
   fprintf(stderr, "\e[0;31mREDEEM REQUEST(%lu)\e[0m: %s\n", request_base64_len, request_base64);

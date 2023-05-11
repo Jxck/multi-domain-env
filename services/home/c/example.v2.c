@@ -16,7 +16,7 @@
 
 // V2 VOPRF
 int main(int argc, char **argv) {
-  const    TRUST_TOKEN_METHOD *method = TRUST_TOKEN_experiment_v2_voprf();
+  const    TRUST_TOKEN_METHOD *method = TRUST_TOKEN_pst_v1_voprf();
   uint8_t  priv_key[TRUST_TOKEN_MAX_PRIVATE_KEY_SIZE];
   uint8_t  pub_key[TRUST_TOKEN_MAX_PUBLIC_KEY_SIZE];
   size_t   priv_key_len, pub_key_len;

@@ -12,7 +12,7 @@
  * error: 0
  */
 int key_generate(base64_keys_t *keys) {
-  const TRUST_TOKEN_METHOD *method = TRUST_TOKEN_experiment_v2_voprf();
+  const TRUST_TOKEN_METHOD *method = TRUST_TOKEN_pst_v1_voprf();
   size_t  priv_key_len,
           pub_key_len;
 
@@ -28,7 +28,7 @@ int key_generate(base64_keys_t *keys) {
                                 priv_key, &priv_key_len, TRUST_TOKEN_MAX_PRIVATE_KEY_SIZE,
                                 pub_key,  &pub_key_len,  TRUST_TOKEN_MAX_PUBLIC_KEY_SIZE,
                                 key_id)) {
-    fprintf(stderr, "failed to generate TRUST_TOKEN key.\n");
+    fprintf(stderr, "failed to generate Private State Token key.\n");
     return 0;
   }
 
