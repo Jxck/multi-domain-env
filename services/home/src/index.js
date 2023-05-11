@@ -1,8 +1,12 @@
 // DSP
 import express from "express"
 import { readFileSync } from "fs"
+import { promisify } from "util";
 import { resolve } from "path"
+import * as childProcess from "child_process";
 const { EXTERNAL_PORT, PORT } = process.env
+
+const exec = promisify(childProcess.exec);
 
 const Y = readFileSync(`${resolve("./")}/keys/pub_key.txt`)
   .toString()
@@ -61,10 +65,8 @@ app.get(`/private-state-token/issuance`, async (req, res) => {
   console.log(req.headers)
   const sec_trust_token = req.headers["sec-private-state-token"]
   console.log({ sec_trust_token })
-  if (sec_trust_token.match(BASE64FORMAT) === null) {
-    return res.status(400).send("invalid trust token")
-  }
-  const result = await exec(`./bin/main --issue ${sec_trust_token}`)
+
+  const result = await exec(`${resolve("./")}/bin/main --issue ${sec_trust_token}`)
   const token = result.stdout
   console.log({ token })
   res.set({ "Access-Control-Allow-Origin": "*" })
