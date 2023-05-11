@@ -1,41 +1,41 @@
 version: "3.8"
 
 volumes:
-  first_node_modules:
-  second_node_modules:
-  third_node_modules:
+  home_node_modules:
+  issuer_node_modules:
+  redeemer_node_modules:
 
 services:
-  first:
-    build: ./services/first
-    container_name: "first"
+  home:
+    build: ./services/home
+    container_name: "home"
     env_file:
       - .env
     volumes:
-      - ./services/first:/workspace
-      - first_node_modules:/workspace/node_modules
+      - ./services/home:/workspace
+      - home_node_modules:/workspace/node_modules
     networks:
       - internal
 
-  second:
-    build: ./services/second
-    container_name: "second"
+  issuer:
+    build: ./services/issuer
+    container_name: "issuer"
     env_file:
       - .env
     volumes:
-      - ./services/second:/workspace
-      - second_node_modules:/workspace/node_modules
+      - ./services/issuer:/workspace
+      - issuer_node_modules:/workspace/node_modules
     networks:
       - internal
 
-  third:
-    build: ./services/third
-    container_name: "third"
+  redeemer:
+    build: ./services/redeemer
+    container_name: "redeemer"
     env_file:
       - .env
     volumes:
-      - ./services/third:/workspace
-      - third_node_modules:/workspace/node_modules
+      - ./services/redeemer:/workspace
+      - redeemer_node_modules:/workspace/node_modules
     networks:
       - internal
 
@@ -57,9 +57,9 @@ services:
     env_file:
       - .env
     depends_on:
-      - first
-      - second
-      - third
+      - home
+      - issuer
+      - redeemer
 
 networks:
   internal:
