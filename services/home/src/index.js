@@ -115,64 +115,11 @@ app.get(`/private-state-token/send-rr`, async (req, res) => {
   const redemption_record = Buffer.from(params["redemption-record"]).toString()
   console.log({ redemption_record })
 
-  // verify client_public_key
-  const sec_signature = sfv.decodeDict(headers["sec-signature"])
-  const signatures = sec_signature.signatures.value[0]
-  const client_public_key = signatures.params["public-key"]
-  const sig = signatures.params["sig"]
-
-  console.log({ sec_signature })
-  console.log({ signatures })
-  console.log({ client_public_key })
-  console.log({ sig })
-
-  // verify sec-signature
-  const canonical_request_data = new Map([
-    ["destination", REDEEMER],
-    ["sec-redemption-record", headers["sec-redemption-record"]],
-    ["sec-time", headers["sec-time"]],
-    ["sec-private-state-tokens-additional-signing-data", headers["sec-private-state-tokens-additional-signing-data"]],
-    ["public-key", client_public_key]
-  ])
-
-  console.log(canonical_request_data)
-
-  const cbor_data = map(canonical_request_data)
-  const prefix = Buffer.from(headers["sec-private-state-token-version"])
-  console.log({ prefix })
-  const signing_data = new Uint8Array([...prefix, ...cbor_data])
-
-  console.log({
-    sig,
-    signing_data,
-    client_public_key,
-    sig_len: sig.length,
-    signing_data_len: signing_data.length,
-    client_public_key_len: client_public_key.length
-  })
-
-  const key = await webcrypto.subtle.importKey(
-    "raw",
-    client_public_key,
-    {
-      name: "ECDSA",
-      namedCurve: "P-256"
-    },
-    true,
-    ["verify"]
-  )
-
-  console.log(key)
-
-  // verify by Node Crypto
-  const key_object = KeyObject.from(key)
-  console.log(key_object)
-
-  const sig_verify = await promisify(verify)("SHA256", signing_data, key_object, sig)
-  console.log({ sig_verify })
+  const r = Buffer.from(redemption_record, 'base64').toString()
+  console.log({r})
 
   res.set({ "Access-Control-Allow-Origin": "*" })
-  res.send({ sig_verify })
+  res.send(r)
 })
 
 app.get("/", async (req, res) => {

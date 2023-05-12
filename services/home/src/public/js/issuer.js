@@ -62,18 +62,6 @@ document.on("DOMContentLoaded", async (e) => {
             operation: "send-redemption-record",
             issuers: [ISSUER],
           },
-          // headers: new Headers({
-          //   "Signed-Headers": "sec-redemption-record, sec-time"
-          // }),
-
-          // trustToken: {
-          //   type: "send-redemption-record",
-          //   issuers: [ISSUER],
-          //   refreshPolicy: "refresh",
-          //   includeTimestampHeader: true,
-          //   signRequestData: "include",
-          //   additionalSigningData: "additional_signing_data"
-          // }
         })
 
         const body = await res.json()

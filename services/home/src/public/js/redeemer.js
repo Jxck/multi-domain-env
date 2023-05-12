@@ -55,47 +55,37 @@ document.on("DOMContentLoaded", async (e) => {
             refreshPolicy: "none"
           }
         })
-        console.log({res})
-
+        console.log({ res })
       } catch (err) {
         await progress("#cached")
         console.info(err)
       }
 
-      return
-
       await progress("#verify")
 
       // send RR and echo Sec-Redemption-Record
-      const res = await fetch(`/.well-known/private-state-token/send-rr`, {
-        method: "POST",
-        headers: new Headers({
-          // "Signed-Headers": "sec-redemption-record, sec-time"
-        }),
+      const res = await fetch(`/private-state-token/send-rr`, {
         privateToken: {
           version: 1,
           operation: "send-redemption-record",
           issuers: [ISSUER]
-          // refreshPolicy: "none",
-          // includeTimestampHeader: true,
-          // signRequestData: "include",
-          // additionalSigningData: "additional_signing_data"
         }
       })
 
       const body = await res.json()
       console.log(JSON.stringify(body, " ", " "))
 
-      if (body.sig_verify) {
-        await progress("#finish")
-        $("dialog").close()
-        $("summary").removeEventListener("click", verify_human)
-        e.target.click()
-      } else {
-        await progress("#failed")
-      }
+      await progress("#finish")
+      $("dialog").close()
+      $("summary").removeEventListener("click", verify_human)
+      e.target.click()
     }
   }
 
-  $("summary").on("click", verify_human)
+  try {
+    $("summary").on("click", verify_human)
+  } catch (error) {
+    console.error(error)
+    await progress("#failed")
+  }
 })
