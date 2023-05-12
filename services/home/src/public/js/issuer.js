@@ -7,11 +7,22 @@ function base64decode(str) {
   return new Uint8Array([...atob(str)].map((a) => a.charCodeAt(0)))
 }
 
+function sleep(ms) {
+  return new Promise((done, fail) => {
+    setTimeout(done, ms)
+  })
+}
+
+async function progress(message) {
+  $(message).style.visibility = "visible"
+  await sleep(1000)
+}
+
 document.on("DOMContentLoaded", async (e) => {
   const ISSUER = location.origin
 
   $("#yes").on("click", async (e) => {
-    $("#issuing").style.visibility = "visible"
+    await progress("#issuing")
 
     // token issue request
     const option = {
@@ -29,13 +40,14 @@ document.on("DOMContentLoaded", async (e) => {
     const token = await document.hasPrivateToken(ISSUER)
     console.log({ token })
 
+    sleep(1000)
     if (token) {
-      $("#issued").style.visibility = "visible"
+      await progress("#issued")
     } else {
       // TODO: failure case
     }
 
-    $("#back").style.visibility = "visible"
+    await progress("#back")
 
     setTimeout(() => {
       location.href = "https://private-state-token-redeemer.glitch.me/"
@@ -60,8 +72,8 @@ document.on("DOMContentLoaded", async (e) => {
           privateToken: {
             version: 1,
             operation: "send-redemption-record",
-            issuers: [ISSUER],
-          },
+            issuers: [ISSUER]
+          }
         })
 
         const body = await res.json()

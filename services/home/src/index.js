@@ -4,13 +4,10 @@ import { readFileSync } from "fs"
 import { promisify } from "util"
 import { resolve } from "path"
 import * as childProcess from "child_process"
-import * as sfv from "structured-field-values";
+import * as sfv from "structured-field-values"
 const { EXTERNAL_PORT, PORT } = process.env
 
 const exec = promisify(childProcess.exec)
-
-// console.log(await exec("./bin/example"))
-
 const protocol_version = "PrivateStateTokenV1VOPRF"
 
 const Y = readFileSync(`${resolve("./")}/keys/pub_key.txt`)
@@ -112,11 +109,13 @@ app.get(`/private-state-token/send-rr`, async (req, res) => {
   console.log({ rr })
 
   const { value, params } = rr[0]
+  console.log(value) // https://private-state-token-issuer.glitch.me
+
   const redemption_record = Buffer.from(params["redemption-record"]).toString()
   console.log({ redemption_record })
 
-  const r = Buffer.from(redemption_record, 'base64').toString()
-  console.log({r})
+  const r = Buffer.from(redemption_record, "base64").toString()
+  console.log({ r })
 
   res.set({ "Access-Control-Allow-Origin": "*" })
   res.send(r)
