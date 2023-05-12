@@ -76,6 +76,7 @@ document.on("DOMContentLoaded", async (e) => {
       console.log(JSON.stringify(body, " ", " "))
 
       await progress("#finish")
+      await sleep(1000)
       $("dialog").close()
       $("summary").removeEventListener("click", verify_human)
       e.target.click()
